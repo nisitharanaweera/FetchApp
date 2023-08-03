@@ -21,8 +21,9 @@ exports.createUser =  async(req,res)=>{
         password,
 
     });
-    user.save(); 
-    res.json(user);
+
+    await user.save(); 
+    res.json({success:true , user});
 };
 
 exports.userSignIn = async (req,res)=>{
@@ -39,8 +40,14 @@ exports.userSignIn = async (req,res)=>{
     });
    const token = jwt.sign({userId:user._id}, process.env.JWT_SECRET,{expiresIn:'1d'});
 
-    res.json({success:true, user, token});
-}
+    const userInfo = {
+        name : user.name,
+        email: user.email,
+        avatar: user.avatar ? user.avatar:'',
+    };
+    
+    res.json({success:true, user: userInfo, token});
+};
 
 
 exports.uploadProfile = async (req,res)=>{
